@@ -1,29 +1,26 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { prisma } from "./prisma"
+import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
-// Type safety for session and user
 declare module "next-auth" {
-    interface Session
-    {
+    interface Session {
         user: {
             id: string
-            name?: string | null
             email?: string | null
+            name?: string | null
             image?: string | null
-            level?: number | null
-            points?: number | null
+            points?: number
+            level?: number
         }
     }
 
-    interface User
-    {
+    interface User {
         id: string
-        name?: string | null
         email?: string | null
-        level?: number | null
-        points?: number | null
+        name?: string | null
+        points?: number
+        level?: number
     }
 }
 
@@ -35,12 +32,9 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials)
-            {
-                try
-                {
-                    if (!credentials?.email || !credentials?.password)
-                    {
+            async authorize(credentials) {
+                try {
+                    if (!credentials?.email || !credentials?.password) {
                         return null
                     }
 
@@ -51,13 +45,12 @@ export const authOptions: NextAuthOptions = {
                             email: true,
                             name: true,
                             password: true,
-                            level: true,
-                            points: true
+                            points: true,
+                            level: true
                         }
                     })
 
-                    if (!user)
-                    {
+                    if (!user || !user.password) {
                         return null
                     }
 
@@ -66,8 +59,7 @@ export const authOptions: NextAuthOptions = {
                         user.password
                     )
 
-                    if (!passwordValid)
-                    {
+                    if (!passwordValid) {
                         return null
                     }
 
@@ -75,11 +67,10 @@ export const authOptions: NextAuthOptions = {
                         id: user.id,
                         email: user.email,
                         name: user.name,
-                        level: user.level,
-                        points: user.points
+                        points: user.points,
+                        level: user.level
                     }
-                } catch (error)
-                {
+                } catch (error) {
                     console.error('Auth error:', error)
                     return null
                 }
@@ -87,32 +78,30 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        async jwt({ token, user })
-        {
-            if (user)
-            {
+        async jwt({ token, user }) {
+            if (user) {
                 token.id = user.id
-                token.level = user.level
                 token.points = user.points
+                token.level = user.level
             }
             return token
         },
-        async session({ session, token })
-        {
-            if (token && session.user)
-            {
+        async session({ session, token }) {
+            if (token && session.user) {
                 session.user.id = token.id as string
-                session.user.level = token.level as number
                 session.user.points = token.points as number
+                session.user.level = token.level as number
             }
             return session
         }
     },
-    debug: process.env.NODE_ENV === 'development',
-    session: { strategy: "jwt" },
-    secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: '/login',
-        error: '/login',
-    }
+        error: '/login'
+    },
+    session: {
+        strategy: "jwt"
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+    debug: process.env.NODE_ENV === 'development'
 }

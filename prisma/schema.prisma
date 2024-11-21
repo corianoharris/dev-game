@@ -50,3 +50,5 @@ model Submission {
   challengeId String
   createdAt   DateTime  @default(now())
 }
+
+
