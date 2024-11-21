@@ -40,9 +40,6 @@ export function Navbar()
                             <Link href="/challenges" className="text-sm text-muted-foreground hover:text-primary">
                                 Challenges
                             </Link>
-                            <Link href="/leaderboard" className="text-sm text-muted-foreground hover:text-primary">
-                                Leaderboard
-                            </Link>
                         </div>
                     )}
                 </div>

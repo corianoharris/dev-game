@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react'
 import { Leaderboard } from '@/components/leaderboard/leaderboard'
 import { BadgesList } from '@/components/badges/badges-list'
 import { ChallengesList } from '@/components/challenges/challenges-list'
-import { Navbar } from '@/components/nav/navbar'
 
 export default function DashboardPage()
 {
@@ -12,7 +11,6 @@ export default function DashboardPage()
 
     return (
         <>
-            <Navbar />
             <main className="container mx-auto py-8">
                 <h1 className="text-3xl font-bold mb-8">
                     Welcome back, {session?.user?.name}!
