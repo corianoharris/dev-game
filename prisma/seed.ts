@@ -3,10 +3,13 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
-async function main() {
-    try {
+async function main()
+{
+    try
+    {
         // Clear existing data
         await prisma.submission.deleteMany()
+        await prisma.badge.deleteMany()
         await prisma.challenge.deleteMany()
         await prisma.user.deleteMany()
 
@@ -22,10 +25,37 @@ async function main() {
             },
         })
 
-        console.log('Created user:', user)
+        // Create badges
+        const earlyBirdBadge = await prisma.badge.create({
+            data: {
+                name: 'Early Bird',
+                description: 'First to complete a challenge',
+                level: 1,
+                users: {
+                    connect: {
+                        id: user.id
+                    }
+                }
+            },
+        })
+
+        await prisma.badge.createMany({
+            data: [
+                {
+                    name: 'Code Warrior',
+                    description: 'Complete 5 challenges',
+                    level: 2,
+                },
+                {
+                    name: 'Problem Solver',
+                    description: 'Complete a hard challenge',
+                    level: 3,
+                },
+            ],
+        })
 
         // Create challenges
-        const challenges = await prisma.challenge.createMany({
+        await prisma.challenge.createMany({
             data: [
                 {
                     title: 'FizzBuzz',
@@ -48,21 +78,27 @@ async function main() {
             ],
         })
 
-        console.log('Created challenges:', challenges)
+        console.log({
+            user: user.id,
+            badge: earlyBirdBadge.id,
+        })
 
-    } catch (error) {
+        console.log('Seeding completed')
+    } catch (error)
+    {
         console.error('Error seeding database:', error)
         throw error
     }
 }
 
 main()
-    .then(async () => {
-        console.log('Seeding complete!')
+    .then(async () =>
+    {
         await prisma.$disconnect()
     })
-    .catch(async (e) => {
-        console.error('Error in seed script:', e)
+    .catch(async (e) =>
+    {
+        console.error(e)
         await prisma.$disconnect()
         process.exit(1)
     })
