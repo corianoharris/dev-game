@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { ToastProvider } from "@/components/ui/toast"
 
 export default function Home()
 {
@@ -16,11 +17,9 @@ export default function Home()
           <Link href="/login">
             <Button>Get Started</Button>
           </Link>
-          <Link href="/about">
-            <Button variant="outline">Learn More</Button>
-          </Link>
         </div>
       </div>
+      <ToastProvider />
     </main>
   )
 }

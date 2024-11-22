@@ -13,6 +13,8 @@ import {
 export function Toaster() {
   const { toasts } = useToast()
 
+console.log("Current toasts:", toasts)
+
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {

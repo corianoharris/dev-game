@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from 'react-toastify'
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface LeaderboardEntry
@@ -20,7 +20,6 @@ export function Leaderboard()
 {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
     const [loading, setLoading] = useState(true)
-    const { toast } = useToast()
 
     useEffect(() =>
     {
@@ -45,11 +44,9 @@ export function Leaderboard()
             } catch (error)
             {
                 console.error('Failed to fetch leaderboard:', error)
-                toast({
-                    title: 'Error',
-                    description: 'Failed to load leaderboard. Please try again later.',
-                    variant: 'destructive',
-                })
+                toast.error('Failed to load leaderboard. Please try again later.', {                                      
+                    position: 'bottom-left',  // Pass position as a string
+                })    
             } finally
             {
                 setLoading(false)
@@ -57,7 +54,7 @@ export function Leaderboard()
         }
 
         fetchLeaderboard()
-    }, [toast])
+    }, [])
 
     return (
         <Card>
@@ -67,7 +64,7 @@ export function Leaderboard()
             </CardHeader>
             <CardContent>
                 {loading ? (
-                    <div className="space-y-4">
+                    <div className="space-y-4 h-64 overflow-y-scroll">
                         {[...Array(5)].map((_, i) => (
                             <div key={i} className="flex items-center gap-4">
                                 <Skeleton className="h-12 w-12 rounded-full" />
@@ -79,11 +76,11 @@ export function Leaderboard()
                         ))}
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 h-64 overflow-y-scroll">
                         {leaderboard.map((entry) => (
                             <div
                                 key={entry.id}
-                                className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
+                                className="flex items-center justify-between p-4 bg-muted/50 rounded-lg first:bg-indigo-200 first:text-indigo-900 font-bold"
                             >
                                 <div className="flex items-center space-x-4">
                                     <span className="text-2xl font-bold text-muted-foreground w-8">
@@ -101,7 +98,7 @@ export function Leaderboard()
                                         </p>
                                     </div>
                                 </div>
-                                <Badge variant="secondary" className="ml-auto">
+                                <Badge variant="secondary" className="ml-auto first:text-indigo-500 font-bold">
                                     {entry.points.toLocaleString()} points
                                 </Badge>
                             </div>

@@ -13,7 +13,7 @@ export default function DashboardPage()
         <>
             <main className="container mx-auto py-8">
                 <h1 className="text-3xl font-bold mb-8">
-                    Welcome back, {session?.user?.name}!
+                    Welcome back, {session?.user?.name}
                 </h1>
 
                 <div className="grid gap-8 md:grid-cols-2">

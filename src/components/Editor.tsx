@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import MonacoEditor from '@monaco-editor/react'
+import { Skeleton } from './ui/skeleton'
 
 interface EditorProps
 {
@@ -17,8 +18,10 @@ export const Editor: FC<EditorProps> = ({
 }) =>
 {
     return (
+        <>
+    
         <MonacoEditor
-            height={height}
+            height={height} 
             language={language}
             value={value}
             onChange={(value) => onChange(value || '')}
@@ -30,6 +33,10 @@ export const Editor: FC<EditorProps> = ({
                 tabSize: 2,
                 automaticLayout: true,
             }}
+            loading={<Skeleton className="h-[400px]" />}
         />
+
+        <p className="text-sm text-muted-foreground text-center">Please use JavaScript to write your code</p>
+        </>
     )
 }

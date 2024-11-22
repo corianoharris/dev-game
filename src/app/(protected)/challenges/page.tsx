@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Editor } from '@/components/Editor'
 import { toast } from '@/hooks/use-toast'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface Challenge
 {
@@ -88,6 +89,7 @@ export default function ChallengesPage()
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
                     <h2 className="text-2xl font-bold mb-4">Available Challenges</h2>
+                    <p>*Text Editor will be on right when challenge is selected</p>
                     <div className="space-y-4">
                         {challenges.map((challenge) => (
                             <Card
@@ -119,6 +121,7 @@ export default function ChallengesPage()
                         <h2 className="text-2xl font-bold mb-4">Code Editor</h2>
                         <Card>
                             <CardContent className="p-0">
+                                <Skeleton className="h-12"/>
                                 <Editor
                                     value={code}
                                     onChange={(value) => setCode(value)}

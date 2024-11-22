@@ -7,14 +7,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'react-toastify'
 
-export default function LoginPage() {
+export default function LoginPage()
+{
     const router = useRouter()
-    const { toast } = useToast()
     const [isLoading, setIsLoading] = useState(false)
 
-    async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function onSubmit(event: React.FormEvent<HTMLFormElement>)
+    {
         event.preventDefault()
         setIsLoading(true)
 
@@ -22,7 +23,8 @@ export default function LoginPage() {
         const email = formData.get('email') as string
         const password = formData.get('password') as string
 
-        try {
+        try
+        {
             const result = await signIn('credentials', {
                 email,
                 password,
@@ -30,31 +32,32 @@ export default function LoginPage() {
                 callbackUrl: '/dashboard'
             })
 
-            if (result?.error) {
-                toast({
-                    title: 'Error',
-                    description: 'Invalid email or password',
-                    variant: 'destructive',
+            if (result?.error)
+            {
+
+                toast.error('Invalid email or password. Please try again!', {
+                    position: 'top-left',  // Pass position as a string
                 })
+
                 return
             }
 
-            if (result?.ok) {
-                toast({
-                    title: 'Success',
-                    description: 'Logged in successfully',
+            if (result?.ok)
+            {
+                toast.success('Logged in successfully!', {
+                    position: 'top-left',  // Pass position as a string
                 })
                 router.push('/dashboard')
                 router.refresh()
             }
-        } catch (error) {
+        } catch (error)
+        {
             console.error('Login error:', error)
-            toast({
-                title: 'Error',
-                description: 'Something went wrong. Please try again.',
-                variant: 'destructive',
+            toast.error('Failed to log in. Please try again!', {
+                position: 'top-left',  // Pass position as a string
             })
-        } finally {
+        } finally
+        {
             setIsLoading(false)
         }
     }

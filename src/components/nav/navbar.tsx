@@ -1,32 +1,64 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import
-    {
-        DropdownMenu,
-        DropdownMenuContent,
-        DropdownMenuItem,
-        DropdownMenuLabel,
-        DropdownMenuSeparator,
-        DropdownMenuTrigger,
-    } from '@/components/ui/dropdown-menu'
+{
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { toast } from 'react-toastify'
+
 
 
 export function Navbar()
 {
+    const [isPointsAdded, setIsPointsAdded] = useState(false)
+    const [isNewLevel, setIsNewLevel] = useState(false)
     const { data: session } = useSession()
-  
+   
+
 
     const handleSignOut = async () =>
     {
         await signOut({
             callbackUrl: '/login',
-            redirect: true
+            redirect: true,
+        }).then(() =>
+        {
+            toast.success('Logged out successfully. Hope you come back soon!', {
+                position: 'top-left',  // Pass position as a string
+              })
         })
     }
+
+    useEffect(() =>
+    {
+        if (isPointsAdded)
+        {
+          
+            toast.success('Points added successfully. Congratulations!', {
+                position: 'top-left',  // Pass position as a string
+              })
+
+            setIsPointsAdded(false)
+        }
+
+        if (isNewLevel)
+        {
+            toast.success('New level unlocked. Congratulations!', {
+                position: 'top-left',  // Pass position as a string
+              })
+            setIsNewLevel(false)
+        }
+    }, [isPointsAdded, isNewLevel])
 
     return (
         <nav className="border-b bg-background">
@@ -35,20 +67,14 @@ export function Navbar()
                     <Link href="/dashboard" className="font-bold text-xl">
                         DevGame
                     </Link>
-                    {session?.user && (
-                        <div className="hidden md:flex space-x-4">
-                            <Link href="/challenges" className="text-sm text-muted-foreground hover:text-primary">
-                                Challenges
-                            </Link>
-                        </div>
-                    )}
                 </div>
 
                 {session?.user && (
                     <div className="flex items-center gap-4">
                         <div className="hidden md:flex items-center gap-4">
                             <div className="text-sm text-muted-foreground">
-                                Points: {session.user.points || 0}
+                                Points: {
+                                    session.user.points || 0}
                             </div>
                             <div className="text-sm text-muted-foreground">
                                 Level: {session.user.level || 1}
@@ -74,12 +100,12 @@ export function Navbar()
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem asChild>
+                                {/* <DropdownMenuItem asChild>
                                     <Link href="/profile">Profile</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <Link href="/settings">Settings</Link>
-                                </DropdownMenuItem>
+                                </DropdownMenuItem> */}
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                     className="text-red-600 cursor-pointer"
